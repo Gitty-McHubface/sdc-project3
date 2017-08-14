@@ -1,6 +1,6 @@
 # **Behavioral Cloning Project**
 
-The goals / steps of this project are the following:
+### Goals
 * Use the simulator to collect data of good driving behavior
 * Build, a convolution neural network in Keras that predicts steering angles from images
 * Train and validate the model with a training and validation set
@@ -25,9 +25,7 @@ The goals / steps of this project are the following:
 [image13]: ./examples/right.jpg "sample right camera image"
 
 
-
 ### Files
-
 This project includes the following files for submission:
 * model.py -- the script to create and train the model
 * drive.py -- the script that uses the mode to drive the car in autonomous mode
@@ -35,21 +33,19 @@ This project includes the following files for submission:
 * video.mp4 -- a video of the can beind driven in autonomous mode using the model
 * README.md -- a writeup summarizing the results
 
-### How to run the model
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
 ```sh
 python drive.py model.h5
 ```
 
 ### Driving Data
-
 The following camera and steering angle data was captured using Udacity's simulator with a Playstation3 controller for steering input:
-1. 4 laps of smooth center-lane driving (2 laps in each direction on the track).
-2. 2 additional laps of smooth center-lane driving (1 lap in each direction).
-3. 6 passes of the tight corners (L-R-L if going counter-clockwise) at the "top" of the track (3 in each direction). These are the only corners on the track that require a steering angle greater than 5 degrees. The recording only took place while the car was turning around these corners.
-4. 1 lap of correction data. The car was allowed to drift near the inner and outer lane markers and then was recorded moving back into the center of the road.
+ * **4** laps of smooth center-lane driving (2 laps in each direction on the track).
+ * **2** additional laps of smooth center-lane driving (1 lap in each direction).
+ * **6** passes of the tight corners (L-R-L if going counter-clockwise) at the "top" of the track (3 in each direction). These are the only corners on the track that require a steering angle greater than 5 degrees. Data was recorded only while the car was turning.
+ * **1** lap of correction data. The car was allowed to drift near the inner and outer lane markers and then was recorded moving back into the center of the road.
 
-Below are three image samples from the left, center and right "cameras":
+Below are three sample images from the left, center and right cameras:
 
 ![alt text][image11]
 
@@ -57,7 +53,8 @@ Below are three image samples from the left, center and right "cameras":
 
 ![alt text][image13]
 
-###Model Architecture and Training Strategy
+
+### Model Architecture and Training Strategy
 
 ####1. An appropriate model architecture has been employed
 
