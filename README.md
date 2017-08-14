@@ -69,11 +69,35 @@ The final model architecture is below. It is the model found in the Nvidia [End 
 | Convolution2D(64, 3, 3, activation='relu')                   | (3, 35, 64)   |  27712   |
 | Convolution2D(64, 3, 3, activation='relu')                   | (1, 33, 64)   |  36928   |
 | Flatten                                                      | (2112)        |  0       |
-| Dense(100, activation='relu)                                 | (100)         |  211300  |
+| Dense(100, activation='linear')                              | (100)         |  211300  |
 | Dropout(0.5)                                                 | (100)         |  0       |
-| Dense(50, activation='relu)                                  | (50)          |  5050    |
+| Dense(50, activation='linear')                               | (50)          |  5050    |
 | Dropout(0.5)                                                 | (50)          |  0       |
-| Dense(10, activation='relu)                                  | (10)          |  510     |
+| Dense(10, activation='linear')                               | (10)          |  510     |
+| Dropout(0.5)                                                 | (10)          |  0       |
+| Dense                                                        | (1)           |  11      |
+
+Total params: 348,219
+
+
+
+
+| Layer                |      Output Shape  |  Params  |
+|:-------------------------------------------------------------|:--------------|:---------|
+| Input                                                        | (160, 320, 3) |  0       |
+| Cropping2D((70, 25), (0, 0))                                 | (65, 320, 3)  |  0       |
+| Lambda(x / 255.0 - 0.5)                                      | (65, 320, 3)  |  0       |
+| Convolution2D(24, 5, 5, activation='relu', subsample=(2, 2)) | (31, 158, 24) |  1824    |
+| Convolution2D(36, 5, 5, activation='relu', subsample=(2, 2)) | (14, 77, 36)  |  21636   |
+| Convolution2D(48, 5, 5, activation='relu', subsample=(2, 2)) | (5, 37, 48)   |  43248   |
+| Convolution2D(64, 3, 3, activation='relu')                   | (3, 35, 64)   |  27712   |
+| Convolution2D(64, 3, 3, activation='relu')                   | (1, 33, 64)   |  36928   |
+| Flatten                                                      | (2112)        |  0       |
+| Dense(100, activation='relu')                                | (100)         |  211300  |
+| Dropout(0.5)                                                 | (100)         |  0       |
+| Dense(50, activation='relu')                                 | (50)          |  5050    |
+| Dropout(0.5)                                                 | (50)          |  0       |
+| Dense(10, activation='relu')                                 | (10)          |  510     |
 | Dropout(0.5)                                                 | (10)          |  0       |
 | Dense                                                        | (1)           |  11      |
 
