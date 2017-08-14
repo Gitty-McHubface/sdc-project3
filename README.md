@@ -57,8 +57,8 @@ Below are three sample images from the left, center and right cameras:
 ### Model Architecture and Training Strategy
 
 | Layer                |      Output Shape  |  Params  |
-|:------------------------------------------------------------:|:-------------:|:--------:|
-| Input(160, 320, 3)                                           |               |  0       |
+|:-------------------------------------------------------------|:--------------|:---------|
+| Input                                                        | (160, 320, 3) |  0       |
 | Cropping2D((70, 25), (0, 0))                                 | (65, 320, 3)  |  0       |
 | Lambda(x / 255.0 - 0.5)                                      | (65, 320, 3)  |  0       |
 | Convolution2D(24, 5, 5, activation='relu', subsample=(2, 2)) | (31, 158, 24) |  1824    |
