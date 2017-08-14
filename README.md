@@ -56,6 +56,8 @@ Below are three sample images from the left, center and right cameras:
 
 ### Model Architecture and Training Strategy
 
+The final model architecture is below. It is the model found in the Nvidia [End to End Learning for Self-Driving Cars](https://arxiv.org/pdf/1604.07316.pdf) paper.
+
 | Layer                |      Output Shape  |  Params  |
 |:-------------------------------------------------------------|:--------------|:---------|
 | Input                                                        | (160, 320, 3) |  0       |
