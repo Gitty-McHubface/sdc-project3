@@ -10,15 +10,17 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/1.png 
-[image2]: ./examples/2.png 
-[image3]: ./examples/3.png 
-[image4]: ./examples/4.png 
-[image5]: ./examples/5.png 
-[image6]: ./examples/6.png 
-[image7]: ./examples/7.png 
-[image8]: ./examples/8.png 
-[image9]: ./examples/9.png 
+[image1]: ./examples/left_full.png "full left camera image"
+[image2]: ./examples/left_cropped.png "cropped left camera image"
+[image3]: ./examples/right_full.png "full right camera image"
+[image4]: ./examples/right_cropped.png "cropped right camera image"
+[image5]: ./examples/center_full.png "full center camera image"
+[image6]: ./examples/center_cropped.png "cropped center camera image"
+[image7]: ./examples/center_full_2.png "full center camera image"
+[image8]: ./examples/center_cropped_2.png "cropped center camera image"
+[image9]: ./examples/center_full_3.png "full center camera image"
+[image10]: ./examples/center_cropped_3.png "cropped center camera image"
+
 
 ## Rubric Points
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
