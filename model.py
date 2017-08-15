@@ -11,8 +11,8 @@ from keras.layers.convolutional import Conv2D
 from keras.layers import Cropping2D
 
 
-EPOCHS = 10
-VAL_SPLIT = 0.3
+EPOCHS = 5
+VAL_SPLIT = 0.2
 LEFT_CAM_CORRECTION = 0.25
 RIGHT_CAM_CORRECTION = -LEFT_CAM_CORRECTION
 
@@ -82,14 +82,14 @@ def create_nvidia_model():
     model.add(Conv2D(64, 3, 3, activation='relu', init='he_normal'))
     model.add(Conv2D(64, 3, 3, activation='relu', init='he_normal'))
     model.add(Flatten())
-    model.add(Dense(100, activation='relu', init='he_normal'))
-#    model.add(Dense(100, init='he_normal'))
+#    model.add(Dense(100, activation='relu', init='he_normal'))
+    model.add(Dense(100, init='he_normal'))
     model.add(Dropout(0.5))
-    model.add(Dense(50, activation='relu', init='he_normal'))
-#    model.add(Dense(50, init='he_normal'))
+#    model.add(Dense(50, activation='relu', init='he_normal'))
+    model.add(Dense(50, init='he_normal'))
     model.add(Dropout(0.5))
-    model.add(Dense(10, activation='relu', init='he_normal'))
-#    model.add(Dense(10, init='he_normal'))
+#    model.add(Dense(10, activation='relu', init='he_normal'))
+    model.add(Dense(10, init='he_normal'))
     model.add(Dropout(0.5))
     model.add(Dense(1))
     return model
@@ -107,8 +107,8 @@ def main():
     y_train = np.array(measurements)
     print('X_train shape:', X_train.shape)
 
-    from keras.optimizers import Adam
-    opt = Adam(lr=0.0001)
+#    from keras.optimizers import Adam
+#    opt = Adam(lr=0.0001)
    
     model = create_nvidia_model()
 
@@ -119,7 +119,7 @@ def main():
     print()
     print(model.summary())
 
-    model.compile(loss='mse', optimizer=opt)#'adam')
+    model.compile(loss='mse', optimizer='adam')
     model.fit(X_train, y_train, nb_epoch=EPOCHS, validation_split=VAL_SPLIT, shuffle=True)
 
     model.save('model.h5')
