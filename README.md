@@ -153,3 +153,7 @@ After experimentation, this model was trained for 10 epochs with a 0.2? validati
 While the car succesfully goes around the track in autonomous mode, this model does not perform as well as the one above. It makes sharper corrections and the car weaves more than the first model. I believe that the first model performs better because the fully-connected layers are just linear combinations of the final convolutional layer and it is not overfitting the training data as much.
 
 A video of the car driving around the track using this model can be found at examples/video2.mp4.
+
+### Note
+
+This does seem to be a very large model for the relatively simple simulated environment that we are working with. I experimented with smaller models with convolutional layers like to VGG and max pooling, but far less deep and I did not get good results.
