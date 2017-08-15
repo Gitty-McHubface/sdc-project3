@@ -117,7 +117,9 @@ The hyperparamaters are:
  * drop out prob = 0.5
  * left/right steering correction = 0.25
  
-I let this model steer the car around the track for 10+ laps without going off the road. A video of the car driving 1.5 laps around track (tight corners twice) using this model can be found at examples/video.mp4. I included a video at examples/correction_video.mp4 that shows the car steering away from the edges of the track after I manually move it there.
+I let this model steer the car around the track for 10+ laps without going off the road. Of all the models I tested it is by far the smoothest at driving around the track.
+
+A video of the car driving 1.5 laps around track (tight corners twice) using this model can be found at examples/video.mp4. I included a video at examples/correction_video.mp4 that shows the car steering away from the edges of the track after I manually move it there.
 
 I also trained a model that used RELU activations for the fully-connected layers. It can be seen below.
 
