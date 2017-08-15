@@ -68,7 +68,7 @@ My first attempt was to train Nvidia's [End to End Learning for Self-Driving Car
 | Dense(10, activation='linear')                               | (10)          |  510     |
 | Dense                                                        | (1)           |  11      |
 
-*** Total params: 348,219
+***Total params: 348,219***
 
 Before training, I reviewed the images and decided to crop 70 pixels from the top of the image and 25 pixels from the bottom. This removes the car hood and background and the resulting image only contains areas where features relevant to steering direction can be discovered by the model. Cropped samples from the left, center and right cameras can be seen below.
 
@@ -78,7 +78,7 @@ Before training, I reviewed the images and decided to crop 70 pixels from the to
 
 ![alt text][image6]
 
-The Lambda normalization layer zero centers the pixel values of the input image within a range of -0.5 to 0.5.
+The Lambda normalization layer zero-centers the pixel values of the input image within a range of -0.5 to 0.5.
 
 My first attempt used only the center camera images and a validation split of 0.2. It was obvious from the training and validation loss that the model was overfitting the training data. The car drove poorly and veered off at the first corner.
 
@@ -109,7 +109,7 @@ The most successful architecture that I trained to predict steering angles is be
 | Dropout(0.5)                                                 | (10)          |  0       |
 | Dense                                                        | (1)           |  11      |
 
-*** Total params: 348,219
+***Total params: 348,219***
 
 The hyperparamaters are:
  * epochs = 6
@@ -140,7 +140,7 @@ I also trained a model that used RELU activations for the fully-connected layers
 | Dropout(0.5)                                                 | (10)          |  0       |
 | Dense                                                        | (1)           |  11      |
 
-*** Total params: 348,219
+***Total params: 348,219***
 
 After experimentation, this model was trained for 10 epochs with a 0.3 validation split and a 0.0001 learning rate for the Adam optimizer.
 
