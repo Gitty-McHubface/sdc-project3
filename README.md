@@ -1,44 +1,39 @@
 # **Behavioral Cloning Project**
 
-### Goals
+[//]: # (Image References)
+
+[image1]: ./examples/left.jpg "left camera image"
+[image2]: ./examples/left_cropped.jpg "cropped left camera image"
+[image3]: ./examples/center.jpg "center camera image"
+[image4]: ./examples/center_cropped.jpg "cropped center camera image"
+[image5]: ./examples/right.jpg "right camera image"
+[image6]: ./examples/right_cropped.jpg "cropped right camera image"
+
+## Introduction
+#### Goals
 * Use the simulator to collect data of good driving behavior
 * Build, a convolution neural network in Keras that predicts steering angles from images
 * Train and validate the model with a training and validation set
 * Test that the model successfully drives around track one without leaving the road
 * Summarize the results with a written report
 
-
-[//]: # (Image References)
-
-[image1]: ./examples/left_full.png "full left camera image"
-[image2]: ./examples/left_cropped.png "cropped left camera image"
-[image3]: ./examples/right_full.png "full right camera image"
-[image4]: ./examples/right_cropped.png "cropped right camera image"
-[image5]: ./examples/center_full.png "full center camera image"
-[image6]: ./examples/center_cropped.png "cropped center camera image"
-[image7]: ./examples/center_full_2.png "full center camera image"
-[image8]: ./examples/center_cropped_2.png "cropped center camera image"
-[image9]: ./examples/center_full_3.png "full center camera image"
-[image10]: ./examples/center_cropped_3.png "cropped center camera image"
-[image11]: ./examples/left.jpg "sample left camera image"
-[image12]: ./examples/center.jpg "sample center camera image"
-[image13]: ./examples/right.jpg "sample right camera image"
-
-
-### Files
-This project includes the following files for submission:
+#### Files
 * model.py -- the script to create and train the model
 * drive.py -- the script that uses the mode to drive the car in autonomous mode
-* model.h5 -- a trained convolution neural network 
-* video.mp4 -- a video of the can beind driven in autonomous mode using the model
+* model.h5 -- final trained Keras ConvNet 
+* model2.h5 --  alternative trained Keras ConvNet
 * README.md -- a writeup summarizing the results
+* examples/video.mp4 -- a video of the car being driven in autonomous mode using the final model
+* examples/corrections_video.mp4 -- a video of the car being driven in autonomous mode after manually moving the car to the side of the road (final model)
+* examples/video2.mp4 -- a video of the car being driven in autonomous mode using the alternative model
 
+#### HowTo
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
 ```sh
 python drive.py model.h5
 ```
 
-### Driving Data
+#### Data
 The following camera and steering angle data was captured using Udacity's simulator with a Playstation3 controller for steering input:
  * **4** laps of smooth center-lane driving (2 laps in each direction on the track).
  * **2** additional laps of smooth center-lane driving (1 lap in each direction).
@@ -47,16 +42,51 @@ The following camera and steering angle data was captured using Udacity's simula
 
 Below are three sample images from the left, center and right cameras:
 
-![alt text][image11]
+![alt text][image1]
 
-![alt text][image12]
+![alt text][image3]
 
-![alt text][image13]
+![alt text][image5]
 
+## Approach
 
-### Model Architecture and Training Strategy
+My first attempt was to train Nvidia's [End to End Learning for Self-Driving Cars](https://arxiv.org/pdf/1604.07316.pdf) model (see below) using the 4 laps of the track. The model was implemented in Keras using a mean squared error loss function and the Adam optimizer. It was trained for 5 epochs.
 
-The final model architecture is below. It is the model found in the Nvidia [End to End Learning for Self-Driving Cars](https://arxiv.org/pdf/1604.07316.pdf) paper.
+| Layer                                                        | Output Shape  |  Params  |
+|:-------------------------------------------------------------|:--------------|:---------|
+| Input                                                        | (160, 320, 3) |  0       |
+| Cropping2D((70, 25), (0, 0))                                 | (65, 320, 3)  |  0       |
+| Lambda(x / 255.0 - 0.5)                                      | (65, 320, 3)  |  0       |
+| Convolution2D(24, 5, 5, activation='relu', subsample=(2, 2)) | (31, 158, 24) |  1824    |
+| Convolution2D(36, 5, 5, activation='relu', subsample=(2, 2)) | (14, 77, 36)  |  21636   |
+| Convolution2D(48, 5, 5, activation='relu', subsample=(2, 2)) | (5, 37, 48)   |  43248   |
+| Convolution2D(64, 3, 3, activation='relu')                   | (3, 35, 64)   |  27712   |
+| Convolution2D(64, 3, 3, activation='relu')                   | (1, 33, 64)   |  36928   |
+| Flatten                                                      | (2112)        |  0       |
+| Dense(100, activation='linear')                              | (100)         |  211300  |
+| Dense(50, activation='linear')                               | (50)          |  5050    |
+| Dense(10, activation='linear')                               | (10)          |  510     |
+| Dense                                                        | (1)           |  11      |
+
+***Total params: 348,219
+
+Before training, I reviewed the images and decided to crop 70 pixels from the top of the image and 25 pixels from the bottom. This removes the car hood and background and the resulting image only contains areas where features relevant to steering direction can be discovered by the model. Cropped samples from the left, center and right cameras can be seen below.
+
+![alt text][image2]
+
+![alt text][image4]
+
+![alt text][image6]
+
+The Lambda normalization layer zero centers the pixel values of the input image within a range of -0.5 to 0.5.
+
+My first attempt used only the center camera images and a validation split of 0.2. It was obvious from the training and validation loss that the model was overfitting the training data. The car drove poorly and veered off at the first corner.
+
+At this point, I added dropout regularization after each hidden fully-connected layer with a rate of 0.5. I also doubled the number of training and validation images by flipping each images over the y axis and adjusting the associated measurement appropriately. The model did not seem to be overfitting as much, but still had trouble with drifting and corners.
+
+## Results
+
+The most successful architecture that I trained to drive on the track is below. It is the model found in the Nvidia [End to End Learning for Self-Driving Cars](https://arxiv.org/pdf/1604.07316.pdf) paper with an image cropping layer, normalization layer (Lambda) and dropout on the hidden fully-connected layers.
 
 | Layer                |      Output Shape  |  Params  |
 |:-------------------------------------------------------------|:--------------|:---------|
@@ -77,8 +107,11 @@ The final model architecture is below. It is the model found in the Nvidia [End 
 | Dropout(0.5)                                                 | (10)          |  0       |
 | Dense                                                        | (1)           |  11      |
 
-Total params: 348,219
+***Total params: 348,219
 
+The Lambda normalization layer zero centers the pixel values of the input image withing a range of -0.5 to 0.5.
+
+### Training the model
 
 
 
