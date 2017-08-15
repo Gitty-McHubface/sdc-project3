@@ -18,8 +18,8 @@
 * Summarize the results with a written report
 
 ### Files
-* model.py -- the script to create and train the model
-* drive.py -- the script that uses the mode to drive the car in autonomous mode
+* model.py -- a script to create and train the model
+* drive.py -- a script that uses the model to drive the car in autonomous mode
 * model.h5 -- final trained Keras ConvNet 
 * model2.h5 --  alternative trained Keras ConvNet
 * README.md -- a writeup summarizing the results
