@@ -156,4 +156,4 @@ A video of the car driving around the track using this model can be found at exa
 
 ### Note
 
-This does seem to be a very large model for the relatively simple simulated environment that we are working with. I experimented with smaller models with convolutional layers like to VGG and max pooling, but far less deep and I did not get good results.
+This does seem to be a very large model for the relatively simple simulated environment that we are working with. I experimented with smaller models that used convolutional layers like VGG and max pooling, but far less deep and I did not get good results.
