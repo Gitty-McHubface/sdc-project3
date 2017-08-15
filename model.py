@@ -11,7 +11,7 @@ from keras.layers.convolutional import Conv2D
 from keras.layers import Cropping2D
 
 
-EPOCHS = 15
+EPOCHS = 10
 VAL_SPLIT = 0.3
 LEFT_CAM_CORRECTION = 0.25
 RIGHT_CAM_CORRECTION = -LEFT_CAM_CORRECTION
@@ -81,7 +81,6 @@ def create_nvidia_model():
     model.add(Conv2D(48, 5, 5, activation='relu', init='he_normal', subsample=(2,2)))
     model.add(Conv2D(64, 3, 3, activation='relu', init='he_normal'))
     model.add(Conv2D(64, 3, 3, activation='relu', init='he_normal'))
-#    model.add(MaxPooling2D((2, 2)))
     model.add(Flatten())
     model.add(Dense(100, activation='relu', init='he_normal'))
 #    model.add(Dense(100, init='he_normal'))
