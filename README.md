@@ -88,6 +88,8 @@ At this point, I added dropout regularization after each hidden fully-connected 
 
 Next, I collected more data from the tightest corners on the track. I made six passes, recording only when the car was turning. I collected even more data by allowing the car to drift to the inside and outside lane markers and recording the car moving back towards the center of the road. I also used the left and right camera images by applying a 0.25 steering correction for the left camera a -0.25 correction for the right. Training the model described above with this data yielded the best result.
 
+At one point, I attempted to use an additional 2 laps of center driving data, but I found that the model performed worse and the car drifted off the road in tight corners. I am not sure why or if this is still the case with the final model. It is clear from the results that this additional data is not needed.
+
 ## Results
 
 The most successful architecture that I trained to predict steering angles is below.
