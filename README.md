@@ -10,14 +10,14 @@
 [image6]: ./examples/right_cropped.jpg "cropped right camera image"
 
 ## Introduction
-#### Goals
+### Goals
 * Use the simulator to collect data of good driving behavior
 * Build, a convolution neural network in Keras that predicts steering angles from images
 * Train and validate the model with a training and validation set
 * Test that the model successfully drives around track one without leaving the road
 * Summarize the results with a written report
 
-#### Files
+### Files
 * model.py -- the script to create and train the model
 * drive.py -- the script that uses the mode to drive the car in autonomous mode
 * model.h5 -- final trained Keras ConvNet 
@@ -27,13 +27,13 @@
 * examples/corrections_video.mp4 -- a video of the car being driven in autonomous mode after manually moving the car to the side of the road (final model)
 * examples/video2.mp4 -- a video of the car being driven in autonomous mode using the alternative model
 
-#### HowTo
+### HowTo
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
 ```sh
 python drive.py model.h5
 ```
 
-#### Data
+### Data
 The following camera and steering angle data was captured using Udacity's simulator with a Playstation3 controller for steering input:
  * **4** laps of smooth center-lane driving (2 laps in each direction on the track).
  * **2** additional laps of smooth center-lane driving (1 lap in each direction).
