@@ -82,9 +82,9 @@ The Lambda normalization layer zero-centers the pixel values of the input image 
 
 My first attempt used only the center camera images and a validation split of 0.2. It was obvious from the training and validation loss that the model was overfitting the training data. The car drove poorly and veered off at the first corner.
 
-At this point, I added dropout regularization after each hidden fully-connected layer with a rate of 0.5. I also doubled the number of training and validation images by flipping each images over the y axis and negating the associated steering measurement. The model did not seem to be overfitting as much, but still had trouble with drifting and tight corners in testing. This model always failed in the dirt driveway area in the first tight corner.
+At this point, I added dropout regularization after each hidden fully-connected layer with a rate of 0.5. I also doubled the number of training and validation images by flipping each image over the y-axis and negating the associated steering measurement. The model did not seem to be overfitting as much, but still had trouble with drifting and tight corners in testing. This model always drifted off onto the dirt driveway in the first tight corner.
 
-For my next attempt, I collected more data from the tightest corners on the track. I made six passes, recording only when the car was turning. I collected even more data by allowing the car to drift to the inside and outside lane markers and recording the car moving back towards the center of the road. I also used the left and right camera images by applying a 0.25 steering correction for the left camera a -0.25 correction for the right. Training the model described above with this data yielded the best result.
+Next, I collected more data from the tightest corners on the track. I made six passes, recording only when the car was turning. I collected even more data by allowing the car to drift to the inside and outside lane markers and recording the car moving back towards the center of the road. I also used the left and right camera images by applying a 0.25 steering correction for the left camera a -0.25 correction for the right. Training the model described above with this data yielded the best result.
 
 ## Results
 
@@ -117,7 +117,7 @@ The hyperparamaters are:
  * drop out prob = 0.5
  * left/right steering correction = 0.25
  
-A video of the car driving around the track using this model can be found at examples/video.mp4. I also included a video at examples/correction_video.mp4 that shows the car steering away from the edges of the track after I manually move it there.
+I let this model steer the car around the track for 10+ laps without going off the road. A video of the car driving 1.5 laps around track (tight corners twice) using this model can be found at examples/video.mp4. I included a video at examples/correction_video.mp4 that shows the car steering away from the edges of the track after I manually move it there.
 
 I also trained a model that used RELU activations for the fully-connected layers. It can be seen below.
 
