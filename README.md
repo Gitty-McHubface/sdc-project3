@@ -148,7 +148,7 @@ I also trained a model that used RELU activations for the fully-connected layers
 
 ***Total params: 348,219***
 
-After experimentation, this model was trained for 10 epochs with a 0.3 validation split and a 0.0001 learning rate for the Adam optimizer.
+After experimentation, this model was trained for 10 epochs with a 0.2? validation split and a 0.0001 learning rate for the Adam optimizer.
 
 While the car succesfully goes around the track in autonomous mode, this model does not perform as well as the one above. It makes sharper corrections and the car weaves more than the first model. I believe that the first model performs better because the fully-connected layers are just linear combinations of the final convolutional layer and it is not overfitting the training data as much.
 
