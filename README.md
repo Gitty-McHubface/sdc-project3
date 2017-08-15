@@ -52,6 +52,8 @@ Below are three sample images from the left, center and right cameras:
 
 My first attempt was to train Nvidia's [End to End Learning for Self-Driving Cars](https://arxiv.org/pdf/1604.07316.pdf) model (see below) using the 4 laps of the track. The model was implemented in Keras using a mean squared error loss function and the Adam optimizer. It was trained for 5 epochs and the data was randomly shuffled.
 
+As recommended in the CS231n lecture, I used a weight initialization that has been shown to perform better for deep CNNs (Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification, He et al.). This was accomplished by setting init='he_normal' in the Keras model layers.
+
 | Layer                                                        | Output Shape  |  Params  |
 |:-------------------------------------------------------------|:--------------|:---------|
 | Input                                                        | (160, 320, 3) |  0       |
