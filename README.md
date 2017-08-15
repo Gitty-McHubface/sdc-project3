@@ -50,7 +50,7 @@ Below are three sample images from the left, center and right cameras:
 
 ## Approach
 
-My first attempt was to train Nvidia's [End to End Learning for Self-Driving Cars](https://arxiv.org/pdf/1604.07316.pdf) model (see below) using the 4 laps of the track. The model was implemented in Keras using a mean squared error loss function and the Adam optimizer. It was trained for 5 epochs.
+My first attempt was to train Nvidia's [End to End Learning for Self-Driving Cars](https://arxiv.org/pdf/1604.07316.pdf) model (see below) using the 4 laps of the track. The model was implemented in Keras using a mean squared error loss function and the Adam optimizer. It was trained for 5 epochs and the data was randomly shuffled.
 
 | Layer                                                        | Output Shape  |  Params  |
 |:-------------------------------------------------------------|:--------------|:---------|
@@ -68,7 +68,7 @@ My first attempt was to train Nvidia's [End to End Learning for Self-Driving Car
 | Dense(10, activation='linear')                               | (10)          |  510     |
 | Dense                                                        | (1)           |  11      |
 
-***Total params: 348,219
+*** Total params: 348,219
 
 Before training, I reviewed the images and decided to crop 70 pixels from the top of the image and 25 pixels from the bottom. This removes the car hood and background and the resulting image only contains areas where features relevant to steering direction can be discovered by the model. Cropped samples from the left, center and right cameras can be seen below.
 
@@ -82,11 +82,13 @@ The Lambda normalization layer zero centers the pixel values of the input image 
 
 My first attempt used only the center camera images and a validation split of 0.2. It was obvious from the training and validation loss that the model was overfitting the training data. The car drove poorly and veered off at the first corner.
 
-At this point, I added dropout regularization after each hidden fully-connected layer with a rate of 0.5. I also doubled the number of training and validation images by flipping each images over the y axis and adjusting the associated measurement appropriately. The model did not seem to be overfitting as much, but still had trouble with drifting and corners.
+At this point, I added dropout regularization after each hidden fully-connected layer with a rate of 0.5. I also doubled the number of training and validation images by flipping each images over the y axis and adjusting the associated measurement appropriately. The model did not seem to be overfitting as much, but still had trouble with drifting and tight corners in testing. This model always failed in the dirt driveway area in the first tight corner.
+
+For my next attempt, I collected more data from the tightest corners on the track. I made six passes, recording only when the car was turning. I collected even more data by allowing the car to drift to the inside and outside lane markers and recording the car moving back towards the center of the road. I also used the left and right camera images by applying a 0.25 steering correction for the left camera a -0.25 correction for the right. Training the model described above with this data yielded the best result.
 
 ## Results
 
-The most successful architecture that I trained to drive on the track is below. It is the model found in the Nvidia [End to End Learning for Self-Driving Cars](https://arxiv.org/pdf/1604.07316.pdf) paper with an image cropping layer, normalization layer (Lambda) and dropout on the hidden fully-connected layers.
+The most successful architecture that I trained to predict steering angles is below.
 
 | Layer                |      Output Shape  |  Params  |
 |:-------------------------------------------------------------|:--------------|:---------|
@@ -107,13 +109,17 @@ The most successful architecture that I trained to drive on the track is below. 
 | Dropout(0.5)                                                 | (10)          |  0       |
 | Dense                                                        | (1)           |  11      |
 
-***Total params: 348,219
+*** Total params: 348,219
 
-The Lambda normalization layer zero centers the pixel values of the input image withing a range of -0.5 to 0.5.
+The hyperparamaters are:
+ * epochs = 6
+ * validation split = 0.2
+ * drop out prob = 0.5
+ * left/right steering correction = 0.25
+ 
+A video of the car driving around the track using this model can be found at examples/video.mp4. I also included a video at examples/correction_video.mp4 that shows the car steering away from the edges of the track after I manually move it there.
 
-### Training the model
-
-
+I also trained a model that used RELU activations for the fully-connected layers. It can be seen below.
 
 | Layer                |      Output Shape  |  Params  |
 |:-------------------------------------------------------------|:--------------|:---------|
@@ -134,81 +140,10 @@ The Lambda normalization layer zero centers the pixel values of the input image 
 | Dropout(0.5)                                                 | (10)          |  0       |
 | Dense                                                        | (1)           |  11      |
 
-Total params: 348,219
+*** Total params: 348,219
 
+After experimentation, this model was trained for 10 epochs with a 0.3 validation split and a 0.0001 learning rate for the Adam optimizer.
 
-####1. An appropriate model architecture has been employed
+While the car succesfully goes around the track in autonomous mode, this model does not perform as well as the one above. It makes sharper corrections and the car weaves more than the first model. I believe that the first model performs better because the fully-connected layers are just linear combinations of the final convolutional layer and it is not overfitting the training data as much.
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
-
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
-
-####2. Attempts to reduce overfitting in the model
-
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
-
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
-
-####3. Model parameter tuning
-
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
-
-####4. Appropriate training data
-
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
-
-For details about how I created the training data, see the next section. 
-
-###Model Architecture and Training Strategy
-
-####1. Solution Design Approach
-
-The overall strategy for deriving a model architecture was to ...
-
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
-
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
-
-To combat the overfitting, I modified the model so that ...
-
-Then I ... 
-
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
-
-At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
-
-####2. Final Model Architecture
-
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
-
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
-
-![alt text][image1]
-
-####3. Creation of the Training Set & Training Process
-
-To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
-
-![alt text][image2]
-
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
-
-![alt text][image3]
-![alt text][image4]
-![alt text][image5]
-
-Then I repeated this process on track two in order to get more data points.
-
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
-
-![alt text][image6]
-![alt text][image7]
-
-Etc ....
-
-After the collection process, I had X number of data points. I then preprocessed this data by ...
-
-
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+A video of the car driving around the track using this model can be found at examples/video2.mp4.
