@@ -153,6 +153,31 @@ I also trained a model that used RELU activations for the fully-connected layers
 
 After experimentation, this model was trained for 10 epochs with a 0.2? validation split and a 0.0001 learning rate for the Adam optimizer.
 
+> Train on 46415 samples, validate on 19893 samples
+>
+> I tensorflow/core/common_runtime/gpu/gpu_device.cc:975] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla M60, pci bus id: 0000:00:1e.0)
+>
+> 46415/46415 [==============================] - 62s - loss: 0.0302 - val_loss: 0.0288
+>
+> 46415/46415 [==============================] - 59s - loss: 0.0188 - val_loss: 0.0221
+>
+> 46415/46415 [==============================] - 58s - loss: 0.0151 - val_loss: 0.0187
+>
+> 46415/46415 [==============================] - 58s - loss: 0.0133 - val_loss: 0.0177
+>
+> 46415/46415 [==============================] - 58s - loss: 0.0122 - val_loss: 0.0164
+>
+> 46415/46415 [==============================] - 58s - loss: 0.0116 - val_loss: 0.0160
+>
+> 46415/46415 [==============================] - 58s - loss: 0.0111 - val_loss: 0.0161
+>
+> 46415/46415 [==============================] - 59s - loss: 0.0106 - val_loss: 0.0168
+>
+> 46415/46415 [==============================] - 58s - loss: 0.0102 - val_loss: 0.0162
+>
+> 46415/46415 [==============================] - 59s - loss: 0.0100 - val_loss: 0.0150
+
+
 While the car succesfully goes around the track in autonomous mode, this model does not perform as well as the one above. It makes sharper corrections and the car weaves more than the first model. I believe that the first model performs better because the fully-connected layers are just linear combinations of the final convolutional layer and it is not overfitting the training data as much.
 
 A video of the car driving around the track using this model can be found at examples/video2.mp4.
