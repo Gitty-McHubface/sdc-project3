@@ -5,8 +5,7 @@ import os
 from collections import namedtuple
 
 from keras.models import Sequential
-from keras.layers.core import Dense, Activation, Flatten, Lambda, Dropout
-from keras.layers.pooling import MaxPooling2D
+from keras.layers.core import Dense, Flatten, Lambda, Dropout
 from keras.layers.convolutional import Conv2D
 from keras.layers import Cropping2D
 
