@@ -10,66 +10,74 @@ from keras.layers.pooling import MaxPooling2D
 from keras.layers.convolutional import Conv2D
 from keras.layers import Cropping2D
 
+from sklearn.model_selection import train_test_split
+from sklearn.utils import shuffle
 
-EPOCHS = 5
+EPOCHS = 6
+BATCH = 32
 VAL_SPLIT = 0.2
 LEFT_CAM_CORRECTION = 0.25
 RIGHT_CAM_CORRECTION = -LEFT_CAM_CORRECTION
+FLIP_IMAGES = True
 
-ImageMetaFile = namedtuple('ImageMetaFile', ['path', 'center_image_only', 'flip_images'])
+ImageMetaFile = namedtuple('ImageMetaFile', ['path', 'center_image_only'])
 
 IMAGE_FILE_PATH = './data/IMG/'
-METADATA_FILES = [ ImageMetaFile('./data/smooth_log.csv', False, True),
-#                   ImageMetaFile('./data/additional_smooth_log.csv', False, True),
-                   ImageMetaFile('./data/correction_log.csv', False, True),
-                   ImageMetaFile('./data/tight_turn_log.csv', False, True) ]
+METADATA_FILES = [ ImageMetaFile('./data/smooth_log.csv', False),
+#                   ImageMetaFile('./data/additional_smooth_log.csv', False),
+                   ImageMetaFile('./data/correction_log.csv', False),
+                   ImageMetaFile('./data/tight_turn_log.csv', False) ]
+
+ImageRecord = namedtuple('ImageRecord', ['filename', 'steering_angle', 'flip'])
 
 
 def valid_measurement(measurement):
     return max(-1.0, min(1.0, measurement))
 
 
-def load_image_data(line, img_index):
-    filename = line[img_index].split('/')[-1]
+def load_image(filename, flip):
     image = cv2.imread(os.path.join(IMAGE_FILE_PATH, filename))
-    measurement = float(line[3])
-    return (image, measurement)
-
-
-def process_image(image, measurement, flip, correction=0.0):
-    images = [image]
-    measurements = [valid_measurement(measurement + correction)]
-
     if flip:
-        images.append(cv2.flip(image, 1))
-        measurements.append(valid_measurement(-measurement - correction))
-
-    return (images, measurements)
+        return cv2.flip(image, 1)
+    return image
 
 
-def load_driving_data(metafile, center_image_only=False, flip=True):
-    images = []
-    measurements = []
+# Generator code from Udacity SDC course
+def generator(samples, batch_size=32):
+    num_samples = len(samples)
+    while 1: # Loop forever so the generator never terminates
+        shuffle(samples)
+        for offset in range(0, num_samples, batch_size):
+            batch_samples = samples[offset:offset+batch_size]
 
-    with open(metafile) as f:
-        reader = csv.reader(f)
-        for line in reader:
-            center_image, center_measurement = load_image_data(line, 0)
-            center_images, center_measurements = process_image(center_image, center_measurement, flip)
-            images += center_images
-            measurements += center_measurements
+            images = []
+            angles = []
+            for batch_sample in batch_samples:
+                images.append(load_image(batch_sample.filename, batch_sample.flip))
+                angles.append(batch_sample.steering_angle)
 
-            if not center_image_only:
-                left_image, left_measurement = load_image_data(line, 1)
-                right_image, right_measurement = load_image_data(line, 2)
+            X_train = np.array(images)
+            y_train = np.array(angles)
+            yield shuffle(X_train, y_train)
 
-                left_images, left_measurements = process_image(left_image, left_measurement, False, LEFT_CAM_CORRECTION)
-                right_images, right_measurements = process_image(right_image, right_measurement, False, RIGHT_CAM_CORRECTION)
 
-                images += left_images + right_images
-                measurements += left_measurements + right_measurements
-
-    return (images, measurements)
+def load_meta_records(metafiles):
+    records = []
+    for metafile in metafiles:
+        with open(metafile.path) as f:
+            reader = csv.reader(f)
+            for line in reader:
+                angle = float(line[3])
+                records.append(ImageRecord(filename=line[0].split('/')[-1], steering_angle=angle, flip=False))
+                if FLIP_IMAGES:
+                    records.append(ImageRecord(filename=line[0].split('/')[-1], steering_angle=-angle, flip=True))
+                if not metafile.center_image_only:
+                    records.append(ImageRecord(filename=line[1].split('/')[-1], steering_angle=angle + LEFT_CAM_CORRECTION, flip=False))
+                    records.append(ImageRecord(filename=line[2].split('/')[-1], steering_angle=angle + RIGHT_CAM_CORRECTION, flip=False))
+                    if FLIP_IMAGES:
+                        records.append(ImageRecord(filename=line[1].split('/')[-1], steering_angle=-angle - LEFT_CAM_CORRECTION, flip=True))
+                        records.append(ImageRecord(filename=line[2].split('/')[-1], steering_angle=-angle - RIGHT_CAM_CORRECTION, flip=True))
+    return records
 
 
 def create_nvidia_model():
@@ -94,33 +102,22 @@ def create_nvidia_model():
     model.add(Dense(1))
     return model
 
-    
+
 def main():
-    images = []
-    measurements = []
-    for meta_file in METADATA_FILES:
-        i, m = load_driving_data(meta_file.path, meta_file.center_image_only, meta_file.flip_images)
-        images += i
-        measurements += m
-        
-    X_train = np.array(images)
-    y_train = np.array(measurements)
-    print('X_train shape:', X_train.shape)
+    samples = load_meta_records(METADATA_FILES)
+    train_samples, validation_samples = train_test_split(samples, test_size=VAL_SPLIT)
+    train_generator = generator(train_samples, batch_size=BATCH)
+    validation_generator = generator(validation_samples, batch_size=BATCH)
 
-#    from keras.optimizers import Adam
-#    opt = Adam(lr=0.0001)
-   
+    import sys
+    print('TOTAL SAMPLES:', len(samples))
+    print('SAMPLE MEM (B):', sys.getsizeof(samples))
+    print('TRAIN SAMPLES:', len(train_samples))
+    print('VAL SAMPLES:', len(validation_samples))
+
     model = create_nvidia_model()
-
-    for layer in model.layers:
-        print(layer.get_config())
-        print()
-
-    print()
-    print(model.summary())
-
     model.compile(loss='mse', optimizer='adam')
-    model.fit(X_train, y_train, nb_epoch=EPOCHS, validation_split=VAL_SPLIT, shuffle=True)
+    model.fit_generator(train_generator, samples_per_epoch=len(train_samples), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=EPOCHS)
 
     model.save('model.h5')
 
